@@ -1,4 +1,11 @@
 #!/usr/bin/env bash
+# run_smd_all.sh
+# Runs SMD pulling (grompp + mdrun) for each rep_XX directory, using eq_start.gro
+# and eq_start.cpt as the starting structure and checkpoint.
+# Parallelizes across 4 GPUs; at most one job per GPU at a time.
+#
+# Inputs:  rep_XX/{eq_start.gro, eq_start.cpt, topol.top, index.ndx}, pull_k1000_v0p0005.mdp
+# Outputs (per rep_XX/): pull.tpr, pull.{trr,xtc,edr,log}, pullx.xvg, pullf.xvg, pull.runlog
 set -euo pipefail
 
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -60,7 +67,7 @@ run_one_rep () {
     ) > "$REP/${DEFFNM}.runlog" 2>&1
 }
 
-[[ -f "$PULL_MDP" ]] || { echo "ERROR: pull MDP not found: $PULL_MDP"; exit 1; }
+[[ -f "$PULL_MDP" ]] || { echo "ERROR: pull mdp not found: $PULL_MDP"; exit 1; }
 
 declare -a RUNNING_PIDS=()
 declare -a RUNNING_GPUS=()

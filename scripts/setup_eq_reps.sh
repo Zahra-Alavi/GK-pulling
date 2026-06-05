@@ -2,11 +2,14 @@
 # setup_eq_reps.sh
 # Runs biased equilibration (grompp + mdrun) in each pre-populated rep_XX directory.
 # Assumes each rep_XX/ already contains: npt.gro, topol.top, index.ndx,
-# posre.itp, posre_anchor_CA.itp, amber99sb-ildn.ff, and eq_start.mdp
+# posre.itp, posre_anchor_CA.itp, amber99sb-ildn.ff, and eq star mdp.
 #
 # Parallelizes across 4 GPUs (GPU IDs 0-3).
 # At most 4 mdrun jobs run simultaneously; grompp steps are fast and run serially
 # before each batch.
+#
+# Outputs (per rep_XX/): eq_start.tpr, eq_start.{trr,xtc,edr,log},
+#   eq_pullf.xvg, eq_pullx.xvg, eq_start.runlog. The strucure (gro) and coordinate checkpoint (cpt)files generated here are used for the next step. 
 
 #!/usr/bin/env bash
 set -euo pipefail
