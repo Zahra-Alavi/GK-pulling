@@ -1,0 +1,28 @@
+# GROMACS large outputs
+*.xtc
+*.trr
+*.edr
+*.cpt
+*_prev.cpt
+*.tpr
+*.gro
+*.log
+*.runlog
+
+# Backup files
+#*
+*.bak
+*.tmp
+
+# Python/cache
+__pycache__/
+*.pyc
+
+# Large force-field copied folders, if any
+# amber99sb-ildn.ff/
+
+# Analysis figures
+*.png
+*.pdf
+
+# Keep scripts, mdp files, xvg/csv summaries tracked
