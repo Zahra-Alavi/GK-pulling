@@ -1,0 +1,82 @@
+title       = Equilibrate initial biased state for Jarzynski
+
+define      = -DPOSRES_ANCHOR
+
+; Run parameters
+integrator  = md
+dt          = 0.002
+nsteps      = 500000        ; 1 ns. 
+tinit       = 0
+nstcomm     = 10
+
+; Output control
+nstxout                 = 0
+nstvout                 = 0
+nstfout                 = 0
+nstxout-compressed      = 500        ; 1 ps
+nstenergy               = 500        ; 1 ps
+nstlog                  = 500        ; 1 ps
+
+; Bond parameters
+constraint_algorithm    = lincs
+constraints             = h-bonds
+continuation            = no
+
+; Neighborsearching / cutoffs
+cutoff-scheme   = Verlet
+nstlist         = 20
+rlist           = 1.4
+rcoulomb        = 1.4
+rvdw            = 1.4
+
+; Electrostatics
+coulombtype     = PME
+fourierspacing  = 0.12
+pme_order       = 4
+ewald_rtol      = 1e-5
+
+; Temperature coupling
+; Use stochastic velocity-rescale to generate canonical sampling.
+Tcoupl      = V-rescale
+tc_grps     = Protein Non-Protein
+tau_t       = 1.0 1.0
+ref_t       = 310 310
+
+; Generate new velocities for this replicate
+gen_vel     = yes
+gen_temp    = 310
+gen_seed    = -1
+
+; Pressure coupling: OFF, same as your pulling simulations
+Pcoupl      = no
+
+; PBC
+pbc         = xyz
+DispCorr    = EnerPres
+
+; Pull code: initial biased equilibrium state
+pull                    = yes
+pull_ncoords            = 1
+pull_ngroups            = 2
+
+pull_group1_name        = r_75
+pull_group2_name        = r_171
+
+pull_coord1_type        = umbrella
+pull_coord1_geometry    = distance
+pull_coord1_dim         = N N Y
+pull_coord1_groups      = 1 2
+
+; Important: fixed initial trap center
+pull_coord1_start       = no
+pull_coord1_init        = 4.05746
+
+; No pulling during initial equilibration
+pull_coord1_rate        = 0
+
+; Same k as the protocol you will later pull with
+pull_coord1_k           = 1000
+
+; Save pull coordinate and force for checking
+pull_nstxout            = 50
+pull_nstfout            = 50

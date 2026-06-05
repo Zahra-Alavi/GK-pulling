@@ -1,0 +1,73 @@
+title       = SMD pulling (distance; z-projection)
+define      = -DPOSRES_ANCHOR
+
+; Run parameters
+integrator  = md
+dt          = 0.002		;ps, 2fs
+tinit       = 0
+nsteps      = 3000000		;6000 ps = 6 ns for a displacement of 3nm
+nstcomm     = 100
+
+; Output control
+; Trajectory: keep moderate (you mainly care about pullx/pullf)
+nstxout                 = 0
+nstvout                 = 0
+nstfout                 = 0
+nstxout-compressed      = 500        ; 1 ps (500*2 fs)
+nstenergy               = 500        ; 1 ps
+nstlog                  = 500        ; 1 ps
+
+; Bond parameters
+constraint_algorithm    = lincs
+constraints             = h-bonds
+continuation            = yes
+
+; Neighborsearching / cutoffs
+cutoff-scheme   = Verlet
+nstlist         = 20
+ns_type         = grid
+rlist           = 1.4
+rcoulomb        = 1.4
+rvdw            = 1.4
+
+; Electrostatics
+coulombtype     = PME
+fourierspacing  = 0.12
+pme_order       = 4
+ewald_rtol      = 1e-5
+optimize_fft    = yes
+
+; Temperature coupling
+Tcoupl      = Nose-Hoover
+tc_grps     = Protein   Non-Protein 
+tau_t       = 1.0       1.0
+ref_t       = 310       310
+
+; Pressure coupling: OFF (NVT)
+Pcoupl      = no
+
+; PBC
+pbc     = xyz
+DispCorr    = EnerPres
+
+; Pull code
+pull                    = yes
+pull_ncoords            = 1
+pull_ngroups            = 2
+
+pull_group1_name        = r_75
+pull_group2_name        = r_171
+
+pull_coord1_type        = umbrella
+pull_coord1_geometry    = distance
+pull_coord1_dim         = N N Y
+pull_coord1_groups      = 1 2
+pull_coord1_start = no
+pull_coord1_init  = 4.05746
+
+; output pull coordinate/force every 0.1 ps (50 steps)
+pull_nstxout            = 50
+pull_nstfout            = 50
+
+pull_coord1_rate        = 0.0005
+pull_coord1_k           = 1000
