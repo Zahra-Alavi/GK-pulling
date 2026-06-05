@@ -5,7 +5,7 @@ define      = -DPOSRES_ANCHOR
 integrator  = md
 dt          = 0.002		;ps, 2fs
 tinit       = 0
-nsteps      = 3000000		;6000 ps = 6 ns for a displacement of 3nm
+nsteps      = 1500000		;3000 ps = 3 ns for a displacement of 1.5nm
 nstcomm     = 100
 
 ; Output control
