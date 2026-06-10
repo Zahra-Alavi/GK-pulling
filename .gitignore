@@ -26,3 +26,7 @@ __pycache__/
 *.pdf
 
 # Keep scripts, mdp files, xvg/csv summaries tracked
+hummer_szabo_analysis/hs_pmf.csv
+hummer_szabo_analysis/hs_input_work_summary.csv
+.DS_Store
+.DS_Store
