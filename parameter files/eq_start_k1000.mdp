@@ -47,7 +47,7 @@ gen_vel     = yes
 gen_temp    = 310
 gen_seed    = -1
 
-; Pressure coupling: OFF, same as your pulling simulations
+; Pressure coupling: OFF, same as pulling 
 Pcoupl      = no
 
 ; PBC
@@ -74,7 +74,7 @@ pull_coord1_init        = 4.05746       ;change according to your x_0
 ; No pulling during initial equilibration
 pull_coord1_rate        = 0
 
-; Same k as the protocol you will later pull with
+; Same k as the pull protocol 
 pull_coord1_k           = 1000
 
 ; Save pull coordinate and force for checking
