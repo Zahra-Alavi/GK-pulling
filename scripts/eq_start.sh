@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# setup_eq_reps.sh
+#
 # Runs biased equilibration (grompp + mdrun) in each pre-populated rep_XX directory.
 # Assumes each rep_XX/ already contains: npt.gro, topol.top, index.ndx,
 # posre.itp, posre_anchor_CA.itp, amber99sb-ildn.ff, and eq star mdp.
