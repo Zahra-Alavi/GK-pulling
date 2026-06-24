@@ -18,6 +18,18 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 NGPU=4
 NTOMP=16
 
+START_REP="${1:-1}"
+END_REP="${2:-20}"
+
+[[ "$START_REP" =~ ^[0-9]+$ && "$END_REP" =~ ^[0-9]+$ ]] || {
+  echo "Usage: $0 [START_REP [END_REP]]"
+  exit 1
+}
+(( START_REP >= 1 && START_REP <= END_REP && END_REP <= 99 )) || {
+  echo "ERROR: require 1 <= START_REP <= END_REP <= 99"
+  exit 1
+}
+
 run_rep () {
   local REP="$1"
   local GPU_ID="$2"
@@ -54,8 +66,10 @@ run_rep () {
 gpu_slot=0
 batch_pids=()
 
-for REP in "$BASE_DIR"/rep_{01..20}; do
-  [[ -d "$REP" ]] || continue
+for ((i = START_REP; i <= END_REP; i++)); do
+  printf -v rep_name "rep_%02d" "$i"
+  REP="$BASE_DIR/$rep_name"
+  [[ -d "$REP" ]] || { echo "ERROR: replica directory not found: $REP"; exit 1; }
 
   run_rep "$REP" "$gpu_slot"
   pid=$!
