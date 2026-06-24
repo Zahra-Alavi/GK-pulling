@@ -20,7 +20,7 @@ pullf_name = "pullf.xvg"
 
 # Use 3000 ps if you want early opening before unfolding.
 # Use None for full trajectory.
-TMAX_PS = None
+TMAX_PS = 3000.0
 
 xmin = 3.9
 xmax = 7.2               
@@ -74,10 +74,13 @@ for rep in sorted(glob.glob("rep_??")):
     F = fdata[:n, 1]
 
     if TMAX_PS is not None:
-        mask = t <= TMAX_PS
+        mask = t <= t[0] + TMAX_PS
         t = t[mask]
         x = x[mask]
         F = F[mask]
+        if len(t) < 2:
+            print(f"Skipping {rep}: not enough points in first {TMAX_PS:g} ps")
+            continue
 
     xref = x_ref0 + v * t
 
@@ -99,6 +102,7 @@ for rep in sorted(glob.glob("rep_??")):
     work_final_rows.append({
         "rep": rep,
         "W_final_kJmol": W[-1],
+        "time_final_ps": t[-1],
         "x_first_nm": x[0],
         "x_last_nm": x[-1],
         "xref_first_nm": xref[0],
