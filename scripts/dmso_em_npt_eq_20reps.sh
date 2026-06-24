@@ -300,6 +300,7 @@ PY
             -f "${DMSO_EQ_MDP}" \
             -c npt_dmso_short.gro \
             -t npt_dmso_short.cpt \
+            -r npt_dmso_short.gro \
             -p topol.top \
             -o eq_dmso_5ns.tpr
 
