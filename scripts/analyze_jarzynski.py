@@ -13,6 +13,7 @@ beta = 1.0 / (kB * T)
 
 v = 0.0005                     # nm/ps
 x_ref0 = 4.05746               # nm
+MAX_TIME_PS = 3000.0           # first 3 ns of each pull trajectory
 
 pullf_name = "pullf.xvg"
 pullx_name = "pullx.xvg"
@@ -54,8 +55,20 @@ for rep in sorted(glob.glob("rep_??")):
         print(f"Bad pullf file: {pullf_path}")
         continue
 
-    t = fdata[:, 0]       # ps
-    F = fdata[:, 1]       # kJ/mol/nm, GROMACS pull force
+    t_all = fdata[:, 0]       # ps
+    F_all = fdata[:, 1]       # kJ/mol/nm, GROMACS pull force
+
+    # Analyze only the first MAX_TIME_PS from the start of this trajectory.
+    # This uses relative time so it also works if the XVG time column does not
+    # start exactly at zero.
+    t_start = t_all[0]
+    time_mask = t_all <= t_start + MAX_TIME_PS
+    if np.count_nonzero(time_mask) < 2:
+        print(f"Not enough pullf points in first {MAX_TIME_PS:g} ps for {rep}, skipping")
+        continue
+
+    t = t_all[time_mask]
+    F = F_all[time_mask]
 
     # Protocol work:
     # W(t) = integral F(t) dx_ref = integral F(t) v dt
@@ -68,7 +81,8 @@ for rep in sorted(glob.glob("rep_??")):
 
     if os.path.exists(pullx_path):
         xdata = read_xvg(pullx_path)
-        x = xdata[:, 1]
+        xmask = xdata[:, 0] <= xdata[0, 0] + MAX_TIME_PS
+        x = xdata[xmask, 1]
         x_first = x[0]
         x_last = x[-1]
         x_mean = np.mean(x)
@@ -110,6 +124,7 @@ summary = {
     "N_replicas": len(works),
     "Temperature_K": T,
     "beta_mol_per_kJ": beta,
+    "max_analysis_time_ps": MAX_TIME_PS,
     "pulling_rate_nm_per_ps": v,
     "work_sign_used": SIGN,
     "mean_work_kJmol": W_mean,
